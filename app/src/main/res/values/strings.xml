@@ -1,3 +1,71 @@
 <resources>
     <string name="app_name">Alarm and Player</string>
+
+
+
+    <!--weather icon unicode according to open weather map
+        https://github.com/erikflowers/weather-icons/ -> icon font
+        https://erikflowers.github.io/weather-icons/api-list.html -> open weather map codes to css
+    -->
+    <string name="wi_200">\uf02d</string>
+    <string name="wi_201">\uf02d</string>
+    <string name="wi_202">\uf02d</string>
+    <string name="wi_210">\uf025</string>
+    <string name="wi_211">\uf025</string>
+    <string name="wi_212">\uf025</string>
+    <string name="wi_221">\uf025</string>
+    <string name="wi_230">\uf02d</string>
+    <string name="wi_231">\uf02d</string>
+    <string name="wi_232">\uf02d</string>
+    <string name="wi_300">\uf02b</string>
+    <string name="wi_301">\uf02b</string>
+    <string name="wi_302">\uf028</string>
+    <string name="wi_310">\uf028</string>
+    <string name="wi_311">\uf028</string>
+    <string name="wi_312">\uf028</string>
+    <string name="wi_313">\uf028</string>
+    <string name="wi_314">\uf028</string>
+    <string name="wi_321">\uf02b</string>
+    <string name="wi_500">\uf02b</string>
+    <string name="wi_501">\uf028</string>
+    <string name="wi_502">\uf028</string>
+    <string name="wi_503">\uf028</string>
+    <string name="wi_504">\uf028</string>
+    <string name="wi_511">\uf026</string>
+    <string name="wi_520">\uf029</string>
+    <string name="wi_521">\uf029</string>
+    <string name="wi_522">\uf029</string>
+    <string name="wi_531">\uf02c</string>
+    <string name="wi_600">\uf02a</string>
+    <string name="wi_601">\uf0b4</string>
+    <string name="wi_602">\uf02a</string>
+    <string name="wi_611">\uf026</string>
+    <string name="wi_612">\uf026</string>
+    <string name="wi_615">\uf026</string>
+    <string name="wi_616">\uf026</string>
+    <string name="wi_620">\uf026</string>
+    <string name="wi_621">\uf02a</string>
+    <string name="wi_622">\uf02a</string>
+    <string name="wi_701">\uf029</string>
+    <string name="wi_711">\uf062</string>
+    <string name="wi_721">\uf0b6</string>
+    <string name="wi_731">\uf063</string>
+    <string name="wi_741">\uf04a</string>
+    <string name="wi_761">\uf063</string>
+    <string name="wi_762">\uf063</string>
+    <string name="wi_771">\uf011</string>
+    <string name="wi_781">\uf056</string>
+    <string name="wi_800">\uf02e</string>
+    <string name="wi_801">\uf022</string>
+    <string name="wi_802">\uf022</string>
+    <string name="wi_803">\uf022</string>
+    <string name="wi_804">\uf086</string>
+    <string name="wi_900">\uf056</string>
+    <string name="wi_901">\uf01d</string>
+    <string name="wi_902">\uf073</string>
+    <string name="wi_903">\uf076</string>
+    <string name="wi_904">\uf072</string>
+    <string name="wi_905">\uf021</string>
+    <string name="wi_906">\uf024</string>
+    <string name="wi_957">\uf050</string>
 </resources>
