@@ -4,9 +4,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/colorPrimaryDark"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
     tools:context=".MainActivity">
+
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -30,34 +31,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/robotomono_light"
-            android:layout_marginTop="8dp"
             android:format24Hour="h:mm:ss"
-            android:text="5:33:35"
-            android:textSize="48pt"/>
+            android:textSize="48pt"
+            tools:text="5:33:35"/>
 
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/weather_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="8dp"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:fontFamily="@font/weathericons_regular_webfont"
+            android:text="17\u00B0 \uf01c"
+            android:textSize="24pt"/>
 
-            <ImageView
-                android:id="@+id/weather_icon"
-                android:layout_width="128dp"
-                android:layout_height="128dp"
-                android:src="@drawable/ic_cloudy_forecast_sun_sunny_weather"
-                />
+        <TextView
+            android:id="@+id/weather_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text=" light rain"
+            android:textSize="14pt"/>
 
-            <TextView
-                android:id="@+id/weather_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="Clear sky"
-                android:textSize="14pt"/>
-        </LinearLayout>
+
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
