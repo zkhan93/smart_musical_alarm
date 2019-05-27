@@ -28,6 +28,9 @@ import io.github.zkhan93.alarmandplayer.R;
  */
 public class MainActivity extends AppCompatActivity {
 
+    //    to get the string from open weather map weather code try the below code
+    //    this.getResources().getIdentifier("wi_" + code, "string", getPackageName());
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
