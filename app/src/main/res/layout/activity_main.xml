@@ -10,7 +10,7 @@
 
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
@@ -24,8 +24,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:format24Hour="EEE dd MMM, yyy"
-            tools:text="Mon, 27 May 2019"
-            android:textSize="14pt"/>
+            android:textSize="14pt"
+            tools:text="Mon, 27 May 2019"/>
 
         <TextClock
             android:id="@+id/clock"
@@ -36,39 +36,46 @@
             android:textSize="48pt"
             tools:text="5:33:35"/>
 
-
-        <TextView
-            android:id="@+id/weather_main"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/weather_views"
+            android:layout_width="match_parent"
+            android:visibility="gone"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/weathericons_regular_webfont"
-            tools:text="17\u00B0 \uf01c"
-            android:textSize="24pt"/>
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/weather_desc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text=" light rain"
-            android:textSize="14pt"/>
+            <TextView
+                android:id="@+id/weather_main"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/weathericons_regular_webfont"
+                android:textSize="24pt"
+                tools:text="17\u00B0 \uf01c"/>
 
-        <TextView
-            android:id="@+id/temp_min_max"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="23\u00B0 / 34\u00B0"
-            android:textSize="10pt"/>
+            <TextView
+                android:id="@+id/weather_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14pt"
+                tools:text=" light rain"/>
 
-        <TextView
-            android:id="@+id/city"
-            android:clickable="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Bangalore, India"
-            android:textSize="10pt"/>
+            <TextView
+                android:id="@+id/temp_min_max"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="23\u00B0 / 34\u00B0"
+                android:textSize="10pt"/>
 
+            <TextView
+                android:id="@+id/city"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:clickable="true"
+                android:text="Bangalore, India"
+                android:textSize="10pt"/>
 
+        </LinearLayout>
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
