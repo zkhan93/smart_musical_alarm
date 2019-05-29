@@ -19,10 +19,11 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
+        <TextClock
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:format24Hour="EEE dd MMM, yyy"
             tools:text="Mon, 27 May 2019"
             android:textSize="14pt"/>
 
@@ -48,9 +49,25 @@
             android:id="@+id/weather_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             tools:text=" light rain"
             android:textSize="14pt"/>
+
+        <TextView
+            android:id="@+id/temp_min_max"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="23\u00B0 / 34\u00B0"
+            android:textSize="10pt"/>
+
+        <TextView
+            android:id="@+id/city"
+            android:clickable="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Bangalore, India"
+            android:textSize="10pt"/>
 
 
     </LinearLayout>

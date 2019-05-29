@@ -13,7 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class WeatherClient {
     private static Retrofit retrofit;
-    private static final String BASE_URL = "https://api.openweathermap.org/data/2.5";
+    private static final String BASE_URL = "https://api.openweathermap.org/data/2.5/";
     // api.openweathermap.org/data/2.5/forecast?q={city name},{country code}
 
     public static Retrofit getInstance() {
@@ -26,6 +26,7 @@ public class WeatherClient {
 
                 HttpUrl url = originalHttpUrl.newBuilder()
                         .addQueryParameter("APPID", BuildConfig.OPENWEATHERMAP_API_KEY)
+                        .addQueryParameter("units", "metric")
                         .build();
 
                 // Request customization: add request headers
@@ -43,7 +44,6 @@ public class WeatherClient {
                     .client(httpClient.build())
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
-
         }
         return retrofit;
     }

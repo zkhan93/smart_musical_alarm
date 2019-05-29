@@ -7,4 +7,17 @@ public class Sys {
     public String country;
     public long sunrise;
     public long sunset;
+
+    @Override
+    public String toString() {
+        return "Sys{" +
+                "type=" + type +
+                ", id=" + id +
+                ", message=" + message +
+                ", country='" + country + '\'' +
+                ", sunrise=" + sunrise +
+                ", sunset=" + sunset +
+                '}';
+    }
+
 }

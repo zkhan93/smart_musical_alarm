@@ -1,13 +1,24 @@
 package io.github.zkhan93.alarmandplayer;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
+import android.preference.DialogPreference;
+import android.preference.PreferenceManager;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.internal.Utils;
 import io.github.zkhan93.alarmandplayer.R;
 import io.github.zkhan93.alarmandplayer.service.openweathermap.WeatherClient;
@@ -50,8 +61,23 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.weather_main)
     public TextView weatherMain;
 
-    @BindView(R.id.date)
-    public TextView date;
+    @BindView(R.id.temp_min_max)
+    public TextView weatherTempMinMax;
+
+    @BindView(R.id.city)
+    public TextView city;
+
+    private SharedPreferences preferences;
+    private View.OnClickListener cityClickedListener;
+
+    {
+        cityClickedListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "change city", Toast.LENGTH_SHORT).show();
+            }
+        };
+    }
 
     //    to get the string from open weather map weather code try the below code
     //    this.getResources().getIdentifier("wi_" + code, "string", getPackageName());
@@ -61,15 +87,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         weatherService = WeatherClient.getInstance().create(WeatherService.class);
+        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         ButterKnife.bind(this);
+        city.setOnClickListener(cityClickedListener);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        weatherService.getWeather("Bangalore,IN").enqueue(new Callback<WeatherResponse>() {
+        String city = preferences.getString("city", "Bangalore,IN");
+        weatherService.getWeather(city).enqueue(new Callback<WeatherResponse>() {
             @Override
             public void onResponse(Call<WeatherResponse> call, Response<WeatherResponse> response) {
+                Log.d(TAG,String.format("response: %s", response.body()));
+
                 WeatherResponse wres = response.body();
                 String icon = "";
                 String description = "";
@@ -79,8 +110,9 @@ public class MainActivity extends AppCompatActivity {
                     description = weather.description;
                 }
                 float temp_degree = wres.main.temp;
-                weatherMain.setText(getString(R.string.weather_main, temp_degree, icon));
+                weatherMain.setText(getString(R.string.weather_main, (int)temp_degree, icon));
                 weatherDesc.setText(description);
+                weatherTempMinMax.setText(String.format("%.0f\u00B0 / %.0f\u00B0", wres.main.temp_min, wres.main.temp_max));
             }
 
             @Override

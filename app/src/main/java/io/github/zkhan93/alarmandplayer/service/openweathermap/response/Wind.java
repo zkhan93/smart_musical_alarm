@@ -2,5 +2,13 @@ package io.github.zkhan93.alarmandplayer.service.openweathermap.response;
 
 public class Wind {
     public float speed;
-    public int deg;
+    public float deg;
+
+    @Override
+    public String toString() {
+        return "Wind{" +
+                "speed=" + speed +
+                ", deg=" + deg +
+                '}';
+    }
 }

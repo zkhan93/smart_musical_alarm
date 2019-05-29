@@ -11,4 +11,18 @@ public class WeatherResponse {
     public Sys sys;
     public int id;
     public String name;
+
+    @Override
+    public String toString() {
+        return "WeatherResponse{" +
+                "coord=" + coord +
+                ", weather=" + weather +
+                ", main=" + main +
+                ", wind=" + wind +
+                ", clouds=" + clouds +
+                ", sys=" + sys +
+                ", id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }
