@@ -39,10 +39,10 @@ public class AlarmVH extends RecyclerView.ViewHolder {
     }
 
     private String getTime(int hour, int minute) {
-        String a = "PM";
+        String a = "AM";
         if (hour > 12) {
             hour -= 12;
-            a = "AM";
+            a = "PM";
         }
         return String.format(Locale.ENGLISH, "%d:%02d %s", hour, minute, a);
     }
