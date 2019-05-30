@@ -5,77 +5,58 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
-    tools:context=".MainActivity">
+    android:background="@drawable/background"
+    android:padding="4dp"
+    tools:context=".ClockActivity">
 
+    <include
+        android:id="@+id/left_sidebar"
+        layout="@layout/left_sidebar"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:id="@+id/main_content"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
+        android:animateLayoutChanges="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/right_sidebar"
+        app:layout_constraintRight_toRightOf="@id/left_sidebar"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextClock
             android:id="@+id/date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:format24Hour="EEE dd MMM, yyy"
             android:textSize="14pt"
-            tools:text="Mon, 27 May 2019"/>
+            tools:text="Mon 27 May, 2019"/>
 
         <TextClock
-            android:id="@+id/clock"
+            android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/robotomono_light"
-            android:format24Hour="h:mm:ss"
             android:textSize="48pt"
-            tools:text="5:33:35"/>
+            tools:text="8:42 AM"/>
 
-        <LinearLayout
+        <include
             android:id="@+id/weather_views"
+            layout="@layout/weather_content"
             android:layout_width="match_parent"
-            android:visibility="gone"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/weather_main"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/weathericons_regular_webfont"
-                android:textSize="24pt"
-                tools:text="17\u00B0 \uf01c"/>
-
-            <TextView
-                android:id="@+id/weather_desc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="14pt"
-                tools:text=" light rain"/>
-
-            <TextView
-                android:id="@+id/temp_min_max"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="23\u00B0 / 34\u00B0"
-                android:textSize="10pt"/>
-
-            <TextView
-                android:id="@+id/city"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:clickable="true"
-                android:text="Bangalore, India"
-                android:textSize="10pt"/>
-
-        </LinearLayout>
+            android:visibility="gone"
+            tools:visibility="visible"/>
     </LinearLayout>
+
+    <include
+        android:id="@+id/right_sidebar"
+        layout="@layout/right_sidebar"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
 </android.support.constraint.ConstraintLayout>
