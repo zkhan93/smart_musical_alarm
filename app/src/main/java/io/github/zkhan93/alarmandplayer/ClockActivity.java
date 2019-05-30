@@ -3,6 +3,7 @@ package io.github.zkhan93.alarmandplayer;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -138,7 +139,7 @@ public class ClockActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_clock);
         ButterKnife.bind(this, this);
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -267,6 +268,7 @@ public class ClockActivity extends AppCompatActivity {
 
     public void btnAlarmsClicked(View view) {
         Toast.makeText(getApplicationContext(), "show alarms", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(this, AlarmActivity.class));
     }
 
     public void btnlocationClicked(View view) {

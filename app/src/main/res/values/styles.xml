@@ -4,6 +4,9 @@
     <style name="AppTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="android:textColor">@color/colorTextPrimary</item>
         <item name="android:fontFamily">@font/opensans_light</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
         <item name="buttonStyle">@style/Button</item>
     </style>
 
@@ -14,6 +17,7 @@
         <item name="android:paddingBottom">8dp</item>
         <item name="android:textSize">10pt</item>
     </style>
+
     <style name="TextButton">
         <item name="android:background">?android:selectableItemBackgroundBorderless</item>
         <item name="android:clickable">true</item>

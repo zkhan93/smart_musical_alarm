@@ -5,7 +5,7 @@
               android:layout_height="match_parent"
               android:gravity="center"
               android:orientation="vertical"
-              tools:showIn="@layout/activity_main">
+              tools:showIn="@layout/activity_clock">
 
     <TextView
         android:id="@+id/weather_main"

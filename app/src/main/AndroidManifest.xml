@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="io.github.zkhan93.alarmandplayer">
+
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="com.google.android.things.permission.SET_TIME"/>
     <uses-permission android:name="com.google.android.things.permission.REBOOT"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
-    <application android:label="@string/app_name">
-        <uses-library
-            android:name="com.google.android.things"
-            />
+    <application
+        android:name=".App"
+        android:label="@string/app_name">
 
-        <activity android:name=".ClockActivity"
-                  android:theme="@style/AppTheme"
-            >
+        <uses-library android:name="com.google.android.things"/>
+
+        <activity
+            android:name=".ClockActivity"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -28,10 +30,18 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".AlarmActivity"
+            android:parentActivityName=".ClockActivity"
+            android:theme="@style/AppTheme"
+            >
+        </activity>
+
         <service
             android:name=".job.DownloadWeatherDataJob"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="true"/>
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
     </application>
 
 </manifest>
