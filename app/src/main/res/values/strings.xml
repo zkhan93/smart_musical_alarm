@@ -7,6 +7,10 @@
     <string name="icon_arrow_left">\uf060</string>
     <string name="icon_arrow_right">\uf061</string>
     <string name="icon_plus">\uf067</string>
+    <string name="icon_bell">\uf0f3</string>
+    <string name="icon_play">\uf04b</string>
+    <string name="icon_stop">\uf04d</string>
+
 
     <!--weather icon unicode according to open weather map
         https://github.com/erikflowers/weather-icons/ -> icon font

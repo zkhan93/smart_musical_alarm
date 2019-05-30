@@ -5,8 +5,11 @@ import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -15,11 +18,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.things.device.DeviceManager;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.github.zkhan93.alarmandplayer.data.Alarm;
+import io.github.zkhan93.alarmandplayer.job.AlarmJob;
 import io.github.zkhan93.alarmandplayer.job.DownloadWeatherDataJob;
 
 /**
@@ -77,6 +88,9 @@ public class ClockActivity extends AppCompatActivity {
     @BindView(R.id.btn_alarms)
     public TextView btnAlarms;
 
+    @BindView(R.id.btn_stop)
+    public TextView btnStop;
+
     @BindView(R.id.btn_location)
     public TextView btnLocation;
 
@@ -84,8 +98,12 @@ public class ClockActivity extends AppCompatActivity {
     private View.OnClickListener clicksListener;
     private View.OnLongClickListener longClicksListener;
     private DeviceManager deviceManager;
+    private AudioManager audioManager;
+    private MediaPlayer mediaPlayer;
+
     private SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceChangeListener;
     int LOAD_WEATHERDATA_JOB_ID = 0;
+    private int ALARMS_JOB_ID = 0;
     private JobScheduler jobScheduler;
 
     {
@@ -102,11 +120,15 @@ public class ClockActivity extends AppCompatActivity {
                     case R.id.btn_alarms:
                         btnAlarmsClicked(view);
                         break;
+                    case R.id.btn_stop:
+                        stopRinging();
+                        break;
                     case R.id.btn_location:
-                        btnlocationClicked(view);
+                        btnLocationClicked(view);
                         break;
                     case R.id.btn_power:
-                        Toast.makeText(view.getContext(), "Hold it to reboot", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(view.getContext(), "Hold it to reboot",
+                                Toast.LENGTH_SHORT).show();
                         break;
                 }
             }
@@ -152,7 +174,7 @@ public class ClockActivity extends AppCompatActivity {
         btnAlarms.setOnClickListener(clicksListener);
         btnRefresh.setOnClickListener(clicksListener);
         btnLocation.setOnClickListener(clicksListener);
-
+        btnStop.setOnClickListener(clicksListener);
     }
 
     @Override
@@ -162,6 +184,7 @@ public class ClockActivity extends AppCompatActivity {
         watchWeatherInfo(true);
         setRepeatingAlarmToDownloadWeatherData(true);
         updateWeatherInfo();
+        fetchAlarms();
     }
 
     @Override
@@ -242,10 +265,48 @@ public class ClockActivity extends AppCompatActivity {
     private void setRepeatingAlarmToDownloadWeatherData(boolean enable) {
         jobScheduler.schedule(new JobInfo.Builder(LOAD_WEATHERDATA_JOB_ID,
                 new ComponentName(this, DownloadWeatherDataJob.class))
-                .setPeriodic(60 * 60 * 1000)
+                .setPeriodic(15 * 60 * 1000)
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .setPersisted(true)
                 .build());
+    }
+
+    private void fetchAlarms() {
+        Query query = FirebaseFirestore.getInstance()
+                .collection("alarms");
+        query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot snapshot,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.e(TAG, e.getMessage());
+                    return;
+                }
+                List<Alarm> alarms = snapshot.toObjects(Alarm.class);
+                setJobForAlarms(alarms);
+            }
+        });
+    }
+
+    private void setJobForAlarms(List<Alarm> alarms) {
+        Log.d(TAG, "setJobForAlarms");
+        for (Alarm alarm : alarms) {
+            jobScheduler.cancel(ALARMS_JOB_ID);
+            if (alarm.enabled) {
+                Log.d(TAG, String.format("ring after : %f hours",
+                        alarm.nextAfterMilli() / 1000.0 / 60.0 / 60.0));
+                jobScheduler.schedule(new JobInfo.Builder(ALARMS_JOB_ID,
+                        new ComponentName(this, AlarmJob.class))
+                        .setPersisted(true)
+                        .setMinimumLatency(alarm.nextAfterMilli())
+                        .build());
+            }
+        }
+    }
+
+    private void stopRinging() {
+        jobScheduler.cancel(ALARMS_JOB_ID);
+        fetchAlarms();
     }
 
     /*    click handlers below  */
@@ -271,7 +332,7 @@ public class ClockActivity extends AppCompatActivity {
         startActivity(new Intent(this, AlarmActivity.class));
     }
 
-    public void btnlocationClicked(View view) {
+    public void btnLocationClicked(View view) {
         Toast.makeText(getApplicationContext(), "show location", Toast.LENGTH_SHORT).show();
     }
 }
