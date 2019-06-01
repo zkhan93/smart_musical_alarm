@@ -8,11 +8,14 @@ import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,6 +60,15 @@ public class ClockActivity extends AppCompatActivity {
     public static final String TAG = ClockActivity.class.getSimpleName();
 
 
+    @BindView(R.id.root)
+    public View rootView;
+
+    @BindView(R.id.left_sidebar)
+    public View leftSidebar;
+
+    @BindView(R.id.right_sidebar)
+    public View rightSidebar;
+
     @BindView(R.id.date)
     public TextClock date;
 
@@ -97,14 +109,20 @@ public class ClockActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private View.OnClickListener clicksListener;
     private View.OnLongClickListener longClicksListener;
+    private View.OnTouchListener touchListener;
     private DeviceManager deviceManager;
     private AudioManager audioManager;
     private MediaPlayer mediaPlayer;
-
     private SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceChangeListener;
-    int LOAD_WEATHERDATA_JOB_ID = 0;
-    private int ALARMS_JOB_ID = 0;
     private JobScheduler jobScheduler;
+    private Handler ambientModeHandler;
+    private Runnable ambientModeRunnable;
+
+    int LOAD_WEATHER_DATA_JOB_ID = 0;
+    private int ALARMS_JOB_ID = 0;
+    private boolean isInAmbientMode = false;
+    private int ENABLE_AMBIENT_MODE_AFTER = 15000;
+
 
     {
         clicksListener = new View.OnClickListener() {
@@ -153,6 +171,22 @@ public class ClockActivity extends AppCompatActivity {
                 }
             }
         };
+        touchListener = new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (isInAmbientMode) {
+                    disableAmbientMode();
+                    ambientModeHandler.postDelayed(ambientModeRunnable, ENABLE_AMBIENT_MODE_AFTER);
+                }
+                return false;
+            }
+        };
+        ambientModeRunnable = new Runnable() {
+            @Override
+            public void run() {
+                enableAmbientMode();
+            }
+        };
     }
 
     //    to get the string from open weather map weather code try the below code
@@ -175,6 +209,9 @@ public class ClockActivity extends AppCompatActivity {
         btnRefresh.setOnClickListener(clicksListener);
         btnLocation.setOnClickListener(clicksListener);
         btnStop.setOnClickListener(clicksListener);
+        rootView.setOnTouchListener(touchListener);
+
+        ambientModeHandler = new Handler();
     }
 
     @Override
@@ -185,6 +222,7 @@ public class ClockActivity extends AppCompatActivity {
         setRepeatingAlarmToDownloadWeatherData(true);
         updateWeatherInfo();
         fetchAlarms();
+        ambientModeHandler.postDelayed(ambientModeRunnable, ENABLE_AMBIENT_MODE_AFTER);
     }
 
     @Override
@@ -263,7 +301,7 @@ public class ClockActivity extends AppCompatActivity {
     }
 
     private void setRepeatingAlarmToDownloadWeatherData(boolean enable) {
-        jobScheduler.schedule(new JobInfo.Builder(LOAD_WEATHERDATA_JOB_ID,
+        jobScheduler.schedule(new JobInfo.Builder(LOAD_WEATHER_DATA_JOB_ID,
                 new ComponentName(this, DownloadWeatherDataJob.class))
                 .setPeriodic(15 * 60 * 1000)
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
@@ -309,6 +347,33 @@ public class ClockActivity extends AppCompatActivity {
         fetchAlarms();
     }
 
+    private void disableAmbientMode() {
+        // change the background to blank
+        rootView.setBackground(getDrawable(R.drawable.background));
+        // increase the brightness
+        setVisibilityOfDetailViews(View.VISIBLE, 100);
+    }
+
+    private void enableAmbientMode() {
+        // change the background to blank
+        rootView.setBackground(getDrawable(R.drawable.ambient_bg));
+        setVisibilityOfDetailViews(View.GONE, 2);
+        isInAmbientMode = true;
+    }
+
+    private void setVisibilityOfDetailViews(int visibility, float brightness) {
+        rightSidebar.setVisibility(visibility);
+        leftSidebar.setVisibility(visibility);
+        date.setVisibility(visibility);
+        weatherDesc.setVisibility(visibility);
+        weatherCity.setVisibility(visibility);
+
+        // adjust the brightness
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.screenBrightness = brightness / 100.0f;
+        getWindow().setAttributes(lp);
+    }
+
     /*    click handlers below  */
     private void btnCityClicked(View view) {
         Toast.makeText(getApplicationContext(), "change city", Toast.LENGTH_SHORT).show();
@@ -320,7 +385,7 @@ public class ClockActivity extends AppCompatActivity {
 
     public void btnRefreshClicked(View view) {
         Toast.makeText(getApplicationContext(), "weather data reload", Toast.LENGTH_SHORT).show();
-        jobScheduler.schedule(new JobInfo.Builder(LOAD_WEATHERDATA_JOB_ID,
+        jobScheduler.schedule(new JobInfo.Builder(LOAD_WEATHER_DATA_JOB_ID,
                 new ComponentName(this, DownloadWeatherDataJob.class))
                 .setMinimumLatency(2)
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
