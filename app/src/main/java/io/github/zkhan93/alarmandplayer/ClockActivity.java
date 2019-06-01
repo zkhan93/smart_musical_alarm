@@ -364,7 +364,6 @@ public class ClockActivity extends AppCompatActivity {
     private void setVisibilityOfDetailViews(int visibility, float brightness) {
         rightSidebar.setVisibility(visibility);
         leftSidebar.setVisibility(visibility);
-        date.setVisibility(visibility);
         weatherDesc.setVisibility(visibility);
         weatherCity.setVisibility(visibility);
 
