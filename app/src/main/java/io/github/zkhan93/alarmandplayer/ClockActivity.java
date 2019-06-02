@@ -169,7 +169,7 @@ public class ClockActivity extends AppCompatActivity {
                 if (key.startsWith("weather_")) {
                     updateWeatherInfo();
                 } else if (key.startsWith("setting_")) {
-                    updateSetting(key);
+                    updateSetting();
                 }
             }
         };
@@ -181,7 +181,7 @@ public class ClockActivity extends AppCompatActivity {
                     ambientModeHandler.postDelayed(ambientModeRunnable, ENABLE_AMBIENT_MODE_AFTER);
                 } else {
                     ambientModeHandler.removeCallbacks(ambientModeRunnable);
-                    ambientModeHandler.postDelayed(ambientModeRunnable,ENABLE_AMBIENT_MODE_AFTER);
+                    ambientModeHandler.postDelayed(ambientModeRunnable, ENABLE_AMBIENT_MODE_AFTER);
                 }
                 return false;
             }
@@ -220,17 +220,21 @@ public class ClockActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+        Log.d(TAG,"onStart");
         super.onStart();
         setDateTime();
         watchWeatherInfo(true);
-        setRepeatingAlarmToDownloadWeatherData(true);
+        fetchWeatherNow();
         updateWeatherInfo();
+        setRepeatingAlarmToDownloadWeatherData(true);
         fetchAlarms();
-        ambientModeHandler.postDelayed(ambientModeRunnable, ENABLE_AMBIENT_MODE_AFTER);
+        updateSetting();
     }
+
 
     @Override
     protected void onStop() {
+        Log.d(TAG,"onStop");
         watchWeatherInfo(false);
         setRepeatingAlarmToDownloadWeatherData(false);
         super.onStop();
@@ -258,7 +262,7 @@ public class ClockActivity extends AppCompatActivity {
     }
 
     private void updateWeatherInfo() {
-        String city = sharedPreferences.getString("weather_city", "Bangalore");
+        String city = sharedPreferences.getString(getString(R.string.pref_setting_location_key), null);
         int id = sharedPreferences.getInt("weather_id", -1);
 
         String description = sharedPreferences.getString("weather_description", null);
@@ -310,6 +314,13 @@ public class ClockActivity extends AppCompatActivity {
                 .setPeriodic(15 * 60 * 1000)
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .setPersisted(true)
+                .build());
+    }
+    private void fetchWeatherNow(){
+        jobScheduler.schedule(new JobInfo.Builder(LOAD_WEATHER_DATA_JOB_ID,
+                new ComponentName(this, DownloadWeatherDataJob.class))
+                .setMinimumLatency(0)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .build());
     }
 
@@ -378,26 +389,23 @@ public class ClockActivity extends AppCompatActivity {
         getWindow().setAttributes(lp);
     }
 
-    private void updateSetting(String key) {
-        if (key.equals("setting_ambient_timeout")) {
-            ENABLE_AMBIENT_MODE_AFTER = sharedPreferences.getInt("setting_ambient_timeout",
-                    ENABLE_AMBIENT_MODE_AFTER);
-            ambientModeHandler.removeCallbacks(ambientModeRunnable);
-            ambientModeHandler.postDelayed(ambientModeRunnable, ENABLE_AMBIENT_MODE_AFTER);
-        }
+    private void updateSetting() {
+        ENABLE_AMBIENT_MODE_AFTER =
+                sharedPreferences.getInt(getString(R.string.pref_setting_ambient_key),
+                ENABLE_AMBIENT_MODE_AFTER);
+        ambientModeHandler.removeCallbacks(ambientModeRunnable);
+        ambientModeHandler.postDelayed(ambientModeRunnable, ENABLE_AMBIENT_MODE_AFTER);
+
     }
 
     /*    click handlers below  */
-    private void btnCityClicked(View view) {
-        Toast.makeText(getApplicationContext(), "change city", Toast.LENGTH_SHORT).show();
-    }
 
     private void btnPowerClicked(View view) {
         deviceManager.reboot();
     }
 
     public void btnRefreshClicked(View view) {
-        Toast.makeText(getApplicationContext(), "weather data reload", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Reloading weather data...", Toast.LENGTH_LONG).show();
         jobScheduler.schedule(new JobInfo.Builder(LOAD_WEATHER_DATA_JOB_ID,
                 new ComponentName(this, DownloadWeatherDataJob.class))
                 .setMinimumLatency(2)
@@ -406,12 +414,10 @@ public class ClockActivity extends AppCompatActivity {
     }
 
     public void btnAlarmsClicked(View view) {
-        Toast.makeText(getApplicationContext(), "show alarms", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, AlarmActivity.class));
     }
 
     public void btnSettingClicked(View view) {
-        Toast.makeText(getApplicationContext(), "show settings", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, SettingActivity.class));
     }
 }

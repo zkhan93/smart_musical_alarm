@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">Alarm and Player</string>
+    <string name="title_setting">Settings</string>
+    <string name="title_alarm">Alarms</string>
+
     <string name="weather_main">%1$d\u00B0 %2$s</string>
 
 
@@ -10,7 +13,24 @@
     <string name="icon_bell">\uf0f3</string>
     <string name="icon_play">\uf04b</string>
     <string name="icon_stop">\uf04d</string>
-    <string name="icon_music">\uf1bc</string>
+    <string name="icon_spotify">\uf1bc</string>
+    <string name="icon_sound">\uf001</string>
+    <string name="icon_sun">\uf185</string>
+    <string name="icon_location"></string>
+
+
+    <!--preferences-->
+    <string name="pref_setting_ambient_key">setting_ambient_timeout</string>
+    <string name="setting_ambient_desc">Activate ambient display after %1$d seconds</string>
+    <string name="setting_ambient_title">Ambient Display</string>
+
+    <string name="pref_setting_location_key">setting_location</string>
+    <string name="setting_location_title">Weather Location</string>
+
+    <string name="pref_setting_alarmsound_key">setting_alarm</string>
+    <string name="pref_setting_alarm_title">Alarm Sound</string>
+
+
 
 
     <!--weather icon unicode according to open weather map

@@ -13,6 +13,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 
+import io.github.zkhan93.alarmandplayer.R;
 import io.github.zkhan93.alarmandplayer.service.openweathermap.WeatherClient;
 import io.github.zkhan93.alarmandplayer.service.openweathermap.WeatherService;
 import io.github.zkhan93.alarmandplayer.service.openweathermap.response.Weather;
@@ -25,15 +26,15 @@ public class DownloadWeatherDataJob extends JobService {
     public static final String TAG = DownloadWeatherDataJob.class.getSimpleName();
     private ConnectivityManager connectivityManager;
     private FetchDataTask fetchDataTask;
+
     @Override
     public boolean onStartJob(final JobParameters params) {
         Log.d(TAG, "job started");
         connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         if (isConnected()) {
             fetchDataTask = new FetchDataTask(this.getApplicationContext(), this, params);
-            fetchDataTask .execute();
-        }
-        else
+            fetchDataTask.execute();
+        } else
             Log.d(TAG, "not connection skipped fetching weather data");
 
         return true;
@@ -59,6 +60,7 @@ public class DownloadWeatherDataJob extends JobService {
         private JobParameters params;
         private SharedPreferences sharedPreferences;
         private WeatherService weatherService;
+        private String locationPrefKey;
 
         FetchDataTask(Context context, DownloadWeatherDataJob downloadWeatherDataJob,
                       JobParameters params) {
@@ -66,11 +68,17 @@ public class DownloadWeatherDataJob extends JobService {
             this.params = params;
             sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
             weatherService = WeatherClient.getInstance().create(WeatherService.class);
+            locationPrefKey = context.getString(R.string.pref_setting_location_key);
         }
 
         @Override
         protected Boolean doInBackground(Void... voids) {
-            String city = sharedPreferences.getString("query_city", "Bangalore,IN");
+            String city = sharedPreferences.getString(locationPrefKey, null);
+            Log.d(TAG, "" + city);
+            if (city == null) {
+                return false;
+            }
+            city = city.replace(" ", "");
             try {
                 Response<WeatherResponse> response = weatherService.getWeather(city).execute();
                 Log.d(TAG, String.format("response: %s", response.body()));

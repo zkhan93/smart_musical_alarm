@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -35,7 +36,17 @@ public class AlarmVH extends RecyclerView.ViewHolder {
     public void setAlarm(@NonNull Alarm alarm) {
         time.setText(getTime(alarm.hour, alarm.minute));
         enabled.setChecked(alarm.enabled);
-        describe.setText(getDescription(alarm.repeat));
+        String desc = getDescription(alarm.repeat);
+        if (desc == null) {
+            Calendar now = Calendar.getInstance();
+            int nowHour = now.get(Calendar.HOUR_OF_DAY);
+            int nowMinute = now.get(Calendar.MINUTE);
+            if (alarm.hour > nowHour || (alarm.hour == nowHour && alarm.minute > nowMinute))
+                desc = "Today";
+            else
+                desc = "Tomorrow";
+        }
+        describe.setText(desc);
     }
 
     private String getTime(int hour, int minute) {
@@ -48,6 +59,9 @@ public class AlarmVH extends RecyclerView.ViewHolder {
     }
 
     private String getDescription(List<Integer> repeat) {
+        if (repeat == null || repeat.size() == 0) {
+            return null;
+        }
         StringBuilder description = new StringBuilder();
         if (repeat.contains(1)
                 && repeat.contains(2)

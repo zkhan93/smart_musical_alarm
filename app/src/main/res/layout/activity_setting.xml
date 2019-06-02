@@ -31,7 +31,7 @@
             android:layout_marginEnd="56dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Settings"/>
+            android:text="@string/title_setting"/>
     </LinearLayout>
 
     <ScrollView
@@ -61,7 +61,7 @@
                     style="@style/Text.Icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=""/>
+                    android:text="@string/icon_location"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -74,13 +74,13 @@
                         style="@style/Text.Title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Weather Location"/>
+                        android:text="@string/setting_location_title"/>
 
                     <TextView
                         android:id="@+id/setting_location_desc"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Bangalore, India"/>
+                        tools:text="Bangalore, India"
+                        android:layout_height="wrap_content"/>
                 </LinearLayout>
             </LinearLayout>
 
@@ -98,7 +98,7 @@
                     style="@style/Text.Icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="\uf185"/>
+                    android:text="@string/icon_sun"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -111,13 +111,14 @@
                         style="@style/Text.Title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Ambient Display"/>
+                        android:text="@string/setting_ambient_title"/>
 
                     <TextView
                         android:id="@+id/setting_ambient_desc"
+                        tools:text="Activate ambient display after 20 seconds"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Activate ambient display after 15 seconds"/>
+                        />
                 </LinearLayout>
             </LinearLayout>
 
@@ -135,7 +136,7 @@
                     style="@style/Text.Icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="\uf001"/>
+                    android:text="@string/icon_sound"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -149,13 +150,13 @@
                         style="@style/Text.Title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Alarm Sound"/>
+                        android:text="@string/pref_setting_alarm_title"/>
 
                     <TextView
                         android:id="@+id/setting_alarm_sound_desc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Patrotic Act with Hasan Minhaj - Theme Song..."/>
+                        tools:text="Patriotic Act with Hasan Minhaj - Theme Song..."/>
                 </LinearLayout>
             </LinearLayout>
 
