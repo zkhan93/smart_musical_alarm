@@ -17,6 +17,7 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.zkhan93.alarmandplayer.dialog.BaseDialogFragment;
+import io.github.zkhan93.alarmandplayer.dialog.MediaPickerDialog;
 
 public class SettingActivity extends AppCompatActivity {
     public static final String TAG = SettingActivity.class.getSimpleName();
@@ -125,27 +126,7 @@ public class SettingActivity extends AppCompatActivity {
     }
 
     private void settingAlarmSoundClicked() {
-        ContentResolver cr = getContentResolver();
-
-        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        String selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0";
-        String sortOrder = MediaStore.Audio.Media.TITLE + " ASC";
-        Cursor cur = cr.query(uri, null, selection, null, sortOrder);
-        int count = 0;
-
-        if (cur != null) {
-            count = cur.getCount();
-
-            if (count > 0) {
-                while (cur.moveToNext()) {
-                    String data = cur.getString(cur.getColumnIndex(MediaStore.Audio.Media.DATA));
-                    // Add code to get more column here
-                    Log.d(TAG, data);
-                    // Save to your list here
-                }
-
-            }
-        }
-        cur.close();
+        MediaPickerDialog dialog = new MediaPickerDialog();
+        dialog.show(getSupportFragmentManager(), MediaPickerDialog.TAG);
     }
 }

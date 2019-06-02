@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -21,19 +22,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.things.device.DeviceManager;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.zkhan93.alarmandplayer.data.Alarm;
-import io.github.zkhan93.alarmandplayer.job.AlarmJob;
 import io.github.zkhan93.alarmandplayer.job.DownloadWeatherDataJob;
 
 /**
@@ -116,7 +121,7 @@ public class ClockActivity extends AppCompatActivity {
     private SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceChangeListener;
     private JobScheduler jobScheduler;
     private Handler ambientModeHandler;
-    private Runnable ambientModeRunnable;
+    private Runnable ambientModeRunnable, startAlarmRunnable;
 
     int LOAD_WEATHER_DATA_JOB_ID = 0;
     private int ALARMS_JOB_ID = 0;
@@ -192,6 +197,12 @@ public class ClockActivity extends AppCompatActivity {
                 enableAmbientMode();
             }
         };
+        startAlarmRunnable = new Runnable() {
+            @Override
+            public void run() {
+                startRinging();
+            }
+        };
     }
 
     //    to get the string from open weather map weather code try the below code
@@ -206,6 +217,7 @@ public class ClockActivity extends AppCompatActivity {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         deviceManager = DeviceManager.getInstance();
         jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
 
         btnPower.setOnClickListener(clicksListener);
         btnPower.setOnLongClickListener(longClicksListener);
@@ -220,7 +232,7 @@ public class ClockActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-        Log.d(TAG,"onStart");
+        Log.d(TAG, "onStart");
         super.onStart();
         setDateTime();
         watchWeatherInfo(true);
@@ -234,7 +246,7 @@ public class ClockActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        Log.d(TAG,"onStop");
+        Log.d(TAG, "onStop");
         watchWeatherInfo(false);
         setRepeatingAlarmToDownloadWeatherData(false);
         super.onStop();
@@ -262,7 +274,8 @@ public class ClockActivity extends AppCompatActivity {
     }
 
     private void updateWeatherInfo() {
-        String city = sharedPreferences.getString(getString(R.string.pref_setting_location_key), null);
+        String city = sharedPreferences.getString(getString(R.string.pref_setting_location_key),
+                null);
         int id = sharedPreferences.getInt("weather_id", -1);
 
         String description = sharedPreferences.getString("weather_description", null);
@@ -316,7 +329,8 @@ public class ClockActivity extends AppCompatActivity {
                 .setPersisted(true)
                 .build());
     }
-    private void fetchWeatherNow(){
+
+    private void fetchWeatherNow() {
         jobScheduler.schedule(new JobInfo.Builder(LOAD_WEATHER_DATA_JOB_ID,
                 new ComponentName(this, DownloadWeatherDataJob.class))
                 .setMinimumLatency(0)
@@ -335,30 +349,47 @@ public class ClockActivity extends AppCompatActivity {
                     Log.e(TAG, e.getMessage());
                     return;
                 }
-                List<Alarm> alarms = snapshot.toObjects(Alarm.class);
+                if (snapshot == null) {
+                    return;
+                }
+                List<Alarm> alarms = new ArrayList<>();
+                Alarm alarm;
+                for (DocumentSnapshot ds : snapshot.getDocuments()) {
+                    alarm = ds.toObject(Alarm.class);
+                    if (alarm != null) {
+                        alarm.key = ds.getId();
+                        alarms.add(alarm);
+                    }
+                }
                 setJobForAlarms(alarms);
             }
         });
     }
 
     private void setJobForAlarms(List<Alarm> alarms) {
-        Log.d(TAG, "setJobForAlarms");
+        Log.d(TAG, "sethandlerForAlarms");
+
+        ambientModeHandler.removeCallbacks(startAlarmRunnable);
+
         for (Alarm alarm : alarms) {
-            jobScheduler.cancel(ALARMS_JOB_ID);
             if (alarm.enabled) {
-                Log.d(TAG, String.format("ring after : %f hours",
-                        alarm.nextAfterMilli() / 1000.0 / 60.0 / 60.0));
-                jobScheduler.schedule(new JobInfo.Builder(ALARMS_JOB_ID,
-                        new ComponentName(this, AlarmJob.class))
-                        .setPersisted(true)
-                        .setMinimumLatency(alarm.nextAfterMilli())
-                        .build());
+                long millisecInNextAlarm = alarm.nextAfterMilli();
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
+                cal.add(Calendar.MILLISECOND, (int) millisecInNextAlarm);
+//                cal.setTimeInMillis(System.currentTimeMillis() + millisecInNextAlarm);
+                Log.d(TAG, String.format("ring at : %d %d:%d", cal.get(Calendar.DATE),
+                        cal.get(Calendar.HOUR_OF_DAY),
+                        cal.get(Calendar.MINUTE)
+                ));
+                ambientModeHandler.postDelayed(startAlarmRunnable, millisecInNextAlarm);
             }
         }
     }
 
     private void stopRinging() {
-        jobScheduler.cancel(ALARMS_JOB_ID);
+        if (mediaPlayer != null && mediaPlayer.isPlaying())
+            mediaPlayer.stop();
         fetchAlarms();
     }
 
@@ -392,10 +423,30 @@ public class ClockActivity extends AppCompatActivity {
     private void updateSetting() {
         ENABLE_AMBIENT_MODE_AFTER =
                 sharedPreferences.getInt(getString(R.string.pref_setting_ambient_key),
-                ENABLE_AMBIENT_MODE_AFTER);
+                        ENABLE_AMBIENT_MODE_AFTER);
         ambientModeHandler.removeCallbacks(ambientModeRunnable);
         ambientModeHandler.postDelayed(ambientModeRunnable, ENABLE_AMBIENT_MODE_AFTER);
 
+    }
+
+    private void setFullVolume() {
+        int amStreamMusicMaxVol = audioManager.getStreamMaxVolume(audioManager.STREAM_MUSIC);
+        audioManager.setStreamVolume(audioManager.STREAM_MUSIC, amStreamMusicMaxVol, 0);
+    }
+
+    private void startRinging() {
+        setFullVolume();
+        String path =
+                sharedPreferences.getString(getString(R.string.pref_setting_alarmsound_key)
+                        , null);
+        Log.d(TAG, "path: " + path);
+        if (path != null)
+            mediaPlayer = MediaPlayer.create(getApplicationContext(), Uri.fromFile(new File(path)));
+        else
+            mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.alarm);
+        mediaPlayer.setLooping(true);
+        mediaPlayer.start();
+//        ambientModeHandler.postDelayed(startAlarmRunnable, 24 * 60 * 60 * 1000);
     }
 
     /*    click handlers below  */

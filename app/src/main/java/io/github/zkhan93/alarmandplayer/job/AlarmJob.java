@@ -1,24 +1,44 @@
 package io.github.zkhan93.alarmandplayer.job;
 
-import android.app.job.JobParameters;
-import android.app.job.JobService;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 
 import io.github.zkhan93.alarmandplayer.R;
 
-public class AlarmJob extends JobService {
+public class AlarmJob extends BroadcastReceiver {
     public static final String TAG = AlarmJob.class.getSimpleName();
     private AudioManager audioManager;
     private MediaPlayer mediaPlayer;
+    private SharedPreferences sharedPreferences;
 
     @Override
+    public void onReceive(Context context, Intent intent) {
+        Log.d(TAG, "bingo!!!");
+        if (intent.getAction().equals("com.google.android.things.RING_ALARM")) {
+            Log.d(TAG, "alarm will ring now");
+            sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+            audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+            startRinging(context);
+            Stopper stopper = new Stopper(10, mediaPlayer);
+            stopper.execute();
+        }
+    }
+
+  /*  @Override
     public boolean onStartJob(final JobParameters params) {
         Log.d(TAG, "alarm will ring now");
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
         startRinging();
         Stopper stopper = new Stopper(10, mediaPlayer, this, params);
@@ -32,16 +52,23 @@ public class AlarmJob extends JobService {
         if (mediaPlayer != null && mediaPlayer.isPlaying())
             mediaPlayer.stop();
         return true;
-    }
+    }*/
 
     private void setFullVolume() {
         int amStreamMusicMaxVol = audioManager.getStreamMaxVolume(audioManager.STREAM_MUSIC);
         audioManager.setStreamVolume(audioManager.STREAM_MUSIC, amStreamMusicMaxVol, 0);
     }
 
-    private void startRinging() {
+    private void startRinging(Context context) {
         setFullVolume();
-        mediaPlayer = MediaPlayer.create(this, R.raw.alarm);
+        String path =
+                sharedPreferences.getString(context.getString(R.string.pref_setting_alarmsound_key)
+                        , null);
+        Log.d(TAG, path);
+        if (path != null)
+            mediaPlayer = MediaPlayer.create(context, Uri.fromFile(new File(path)));
+        else
+            mediaPlayer = MediaPlayer.create(context, R.raw.alarm);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
 
@@ -50,14 +77,14 @@ public class AlarmJob extends JobService {
     static class Stopper extends AsyncTask<Void, Void, Void> {
         private int millisec;
         private WeakReference<MediaPlayer> mediaPlayerWeakReference;
-        private WeakReference<AlarmJob> alarmJobWeakReference;
-        private JobParameters params;
+//        private WeakReference<AlarmJob> alarmJobWeakReference;
+//        private JobParameters params;
 
-        public Stopper(int mins, MediaPlayer mediaPlayer, AlarmJob alarmJob, JobParameters params) {
+        public Stopper(int mins, MediaPlayer mediaPlayer) {
             this.millisec = mins * 60 * 1000;
             mediaPlayerWeakReference = new WeakReference<>(mediaPlayer);
-            alarmJobWeakReference = new WeakReference<>(alarmJob);
-            this.params = params;
+//            alarmJobWeakReference = new WeakReference<>(alarmJob);
+//            this.params = params;
         }
 
         @Override
@@ -65,10 +92,10 @@ public class AlarmJob extends JobService {
             MediaPlayer mediaPlayer = mediaPlayerWeakReference.get();
             if (mediaPlayer != null && mediaPlayer.isPlaying())
                 mediaPlayer.stop();
-            AlarmJob alarmJob = alarmJobWeakReference.get();
-            if (alarmJob != null) {
-                alarmJob.jobFinished(params, false);
-            }
+//            AlarmJob alarmJob = alarmJobWeakReference.get();
+//            if (alarmJob != null) {
+////                alarmJob.jobFinished(params, false);
+//            }
         }
 
         @Override

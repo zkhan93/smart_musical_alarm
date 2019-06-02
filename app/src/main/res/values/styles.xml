@@ -42,6 +42,11 @@
         <item name="colorAccent">@color/colorTextPrimary</item>
     </style>
 
+    <style name="Dialog.FullWidth" parent="@style/Theme.AppCompat.DayNight.Dialog.Alert">
+        <item name="android:windowMinWidthMajor">90%</item>
+        <item name="android:windowMinWidthMinor">90%</item>
+    </style>
+
     <style name="EditText" parent="Widget.AppCompat.EditText">
         <item name="android:textColor">@color/colorTextPrimary</item>
         <item name="android:textColorHint">@color/colorTextPrimary</item>

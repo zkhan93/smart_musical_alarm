@@ -2,6 +2,7 @@
     <string name="app_name">Alarm and Player</string>
     <string name="title_setting">Settings</string>
     <string name="title_alarm">Alarms</string>
+    <string name="title_select_sound">Select Sound</string>
 
     <string name="weather_main">%1$d\u00B0 %2$s</string>
 
