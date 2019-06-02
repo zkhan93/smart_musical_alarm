@@ -7,23 +7,31 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="buttonStyle">@style/Button</item>
     </style>
 
-    <style name="Button" parent="@style/Widget.AppCompat.Button.Colored">
-        <item name="android:background">?android:selectableItemBackgroundBorderless</item>
-        <item name="android:fontFamily">@font/fontawesome_webfont</item>
-        <item name="android:paddingTop">8dp</item>
-        <item name="android:paddingBottom">8dp</item>
-        <item name="android:textSize">10pt</item>
+    <style name="Text">
+        <item name="android:fontFamily">@font/opensans_light</item>
+        <item name="android:textColor">@color/colorTextPrimary</item>
     </style>
 
-    <style name="TextButton">
-        <item name="android:background">?android:selectableItemBackgroundBorderless</item>
-        <item name="android:clickable">true</item>
+    <style name="Text.Icon">
         <item name="android:fontFamily">@font/fontawesome_light</item>
         <item name="android:gravity">center</item>
-        <item name="android:padding">16dp</item>
         <item name="android:textSize">18pt</item>
+    </style>
+
+    <style name="Text.Icon.Button">
+        <item name="android:background">?android:selectableItemBackgroundBorderless</item>
+        <item name="android:clickable">true</item>
+        <item name="android:padding">16dp</item>
+    </style>
+
+    <style name="Text.Heading">
+        <item name="android:textSize">45sp</item>
+    </style>
+
+    <style name="Text.Title">
+        <item name="android:textSize">20sp</item>
+        <item name="android:fontFamily">@font/opensans_regular</item>
     </style>
 </resources>

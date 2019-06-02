@@ -103,8 +103,8 @@ public class ClockActivity extends AppCompatActivity {
     @BindView(R.id.btn_stop)
     public TextView btnStop;
 
-    @BindView(R.id.btn_location)
-    public TextView btnLocation;
+    @BindView(R.id.btn_settings)
+    public TextView btnSetting;
 
     private SharedPreferences sharedPreferences;
     private View.OnClickListener clicksListener;
@@ -128,21 +128,21 @@ public class ClockActivity extends AppCompatActivity {
         clicksListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 switch (view.getId()) {
-                    case R.id.city:
-                        btnCityClicked(view);
-                        break;
                     case R.id.btn_refresh:
                         btnRefreshClicked(view);
                         break;
                     case R.id.btn_alarms:
+                        ambientModeHandler.removeCallbacks(ambientModeRunnable);
                         btnAlarmsClicked(view);
                         break;
                     case R.id.btn_stop:
                         stopRinging();
                         break;
-                    case R.id.btn_location:
-                        btnLocationClicked(view);
+                    case R.id.btn_settings:
+                        ambientModeHandler.removeCallbacks(ambientModeRunnable);
+                        btnSettingClicked(view);
                         break;
                     case R.id.btn_power:
                         Toast.makeText(view.getContext(), "Hold it to reboot",
@@ -168,6 +168,8 @@ public class ClockActivity extends AppCompatActivity {
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
                 if (key.startsWith("weather_")) {
                     updateWeatherInfo();
+                } else if (key.startsWith("setting_")) {
+                    updateSetting(key);
                 }
             }
         };
@@ -177,6 +179,9 @@ public class ClockActivity extends AppCompatActivity {
                 if (isInAmbientMode) {
                     disableAmbientMode();
                     ambientModeHandler.postDelayed(ambientModeRunnable, ENABLE_AMBIENT_MODE_AFTER);
+                } else {
+                    ambientModeHandler.removeCallbacks(ambientModeRunnable);
+                    ambientModeHandler.postDelayed(ambientModeRunnable,ENABLE_AMBIENT_MODE_AFTER);
                 }
                 return false;
             }
@@ -202,12 +207,11 @@ public class ClockActivity extends AppCompatActivity {
         deviceManager = DeviceManager.getInstance();
         jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
 
-        weatherCity.setOnClickListener(clicksListener);
         btnPower.setOnClickListener(clicksListener);
         btnPower.setOnLongClickListener(longClicksListener);
         btnAlarms.setOnClickListener(clicksListener);
         btnRefresh.setOnClickListener(clicksListener);
-        btnLocation.setOnClickListener(clicksListener);
+        btnSetting.setOnClickListener(clicksListener);
         btnStop.setOnClickListener(clicksListener);
         rootView.setOnTouchListener(touchListener);
 
@@ -352,6 +356,7 @@ public class ClockActivity extends AppCompatActivity {
         rootView.setBackground(getDrawable(R.drawable.background));
         // increase the brightness
         setVisibilityOfDetailViews(View.VISIBLE, 100);
+        isInAmbientMode = false;
     }
 
     private void enableAmbientMode() {
@@ -371,6 +376,15 @@ public class ClockActivity extends AppCompatActivity {
         WindowManager.LayoutParams lp = getWindow().getAttributes();
         lp.screenBrightness = brightness / 100.0f;
         getWindow().setAttributes(lp);
+    }
+
+    private void updateSetting(String key) {
+        if (key.equals("setting_ambient_timeout")) {
+            ENABLE_AMBIENT_MODE_AFTER = sharedPreferences.getInt("setting_ambient_timeout",
+                    ENABLE_AMBIENT_MODE_AFTER);
+            ambientModeHandler.removeCallbacks(ambientModeRunnable);
+            ambientModeHandler.postDelayed(ambientModeRunnable, ENABLE_AMBIENT_MODE_AFTER);
+        }
     }
 
     /*    click handlers below  */
@@ -396,7 +410,8 @@ public class ClockActivity extends AppCompatActivity {
         startActivity(new Intent(this, AlarmActivity.class));
     }
 
-    public void btnLocationClicked(View view) {
-        Toast.makeText(getApplicationContext(), "show location", Toast.LENGTH_SHORT).show();
+    public void btnSettingClicked(View view) {
+        Toast.makeText(getApplicationContext(), "show settings", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(this, SettingActivity.class));
     }
 }

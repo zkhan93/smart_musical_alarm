@@ -10,6 +10,7 @@
     <string name="icon_bell">\uf0f3</string>
     <string name="icon_play">\uf04b</string>
     <string name="icon_stop">\uf04d</string>
+    <string name="icon_music">\uf1bc</string>
 
 
     <!--weather icon unicode according to open weather map

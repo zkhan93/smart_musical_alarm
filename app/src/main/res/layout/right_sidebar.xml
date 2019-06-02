@@ -9,25 +9,25 @@
 
     <TextView
         android:id="@+id/btn_power"
-        style="@style/TextButton"
+        style="@style/Text.Icon.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="\uf011"/>
 
     <TextView
         android:id="@+id/btn_refresh"
-        style="@style/TextButton"
+        style="@style/Text.Icon.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="\uf021"/>
 
     <TextView
-        android:id="@+id/btn_location"
-        style="@style/TextButton"
+        android:id="@+id/btn_settings"
+        style="@style/Text.Icon.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="\uf041"
+        android:text="\uf013"
         />
 </LinearLayout>

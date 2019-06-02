@@ -8,14 +8,32 @@
     android:background="@drawable/background"
     tools:context=".AlarmActivity">
 
-    <TextView
-        android:id="@+id/back"
-        style="@style/TextButton"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/icon_arrow_left"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/back"
+            style="@style/Text.Icon.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/icon_arrow_left"
+            />
+
+        <TextView
+            style="@style/Text.Heading"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="56dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Alarms"/>
+    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list_alarms"
@@ -27,14 +45,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/back"
+        app:layout_constraintTop_toBottomOf="@+id/header"
         tools:listitem="@layout/listitem_alarm"/>
+
     <TextView
         android:id="@+id/add"
-        style="@style/TextButton"
+        style="@style/Text.Icon.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/icon_plus"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 </android.support.constraint.ConstraintLayout>
