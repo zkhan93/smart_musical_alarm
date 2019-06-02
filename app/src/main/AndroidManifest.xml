@@ -44,14 +44,6 @@
         <service
             android:name=".job.DownloadWeatherDataJob"
             android:permission="android.permission.BIND_JOB_SERVICE"/>
-
-        <receiver
-            android:name=".job.AlarmJob"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.things.RING_ALARM"/>
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>
