@@ -20,7 +20,7 @@ public class Alarm {
     public List<Integer> repeat;
 
     @Exclude
-    public long nextAfterMilli() {
+    public long milliSecBeforeSetOff() {
         //Todo: consider repeat and enabled
         TimeZone IST = TimeZone.getTimeZone("Asia/Kolkata");
         Calendar cal = Calendar.getInstance(IST);

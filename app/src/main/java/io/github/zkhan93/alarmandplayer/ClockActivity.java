@@ -10,6 +10,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -89,11 +90,17 @@ public class ClockActivity extends AppCompatActivity {
     @BindView(R.id.temp_min_max)
     public TextView weatherTempMinMax;
 
+    @BindView(R.id.next_alarm_msg)
+    public TextView nextAlarmMsg;
+
     @BindView(R.id.city)
     public TextView weatherCity;
 
     @BindView(R.id.weather_views)
     public View weatherViews;
+
+    @BindView(R.id.alarm_content)
+    public View nextAlarmViews;
 
 
     @BindView(R.id.btn_power)
@@ -120,13 +127,15 @@ public class ClockActivity extends AppCompatActivity {
     private MediaPlayer mediaPlayer;
     private SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceChangeListener;
     private JobScheduler jobScheduler;
-    private Handler ambientModeHandler;
-    private Runnable ambientModeRunnable, startAlarmRunnable;
+    private Handler handler;
+    private Runnable ambientModeRunnable, startAlarmRunnable, nextAlarmTimeUpdateRunnable;
 
     int LOAD_WEATHER_DATA_JOB_ID = 0;
     private int ALARMS_JOB_ID = 0;
     private boolean isInAmbientMode = false;
+    private boolean stopNextAlarmTimeUpdateRunnable = false;
     private int ENABLE_AMBIENT_MODE_AFTER = 15000;
+    private List<Alarm> alarms;
 
 
     {
@@ -139,14 +148,14 @@ public class ClockActivity extends AppCompatActivity {
                         btnRefreshClicked(view);
                         break;
                     case R.id.btn_alarms:
-                        ambientModeHandler.removeCallbacks(ambientModeRunnable);
+                        handler.removeCallbacks(ambientModeRunnable);
                         btnAlarmsClicked(view);
                         break;
                     case R.id.btn_stop:
                         stopRinging();
                         break;
                     case R.id.btn_settings:
-                        ambientModeHandler.removeCallbacks(ambientModeRunnable);
+                        handler.removeCallbacks(ambientModeRunnable);
                         btnSettingClicked(view);
                         break;
                     case R.id.btn_power:
@@ -183,10 +192,10 @@ public class ClockActivity extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 if (isInAmbientMode) {
                     disableAmbientMode();
-                    ambientModeHandler.postDelayed(ambientModeRunnable, ENABLE_AMBIENT_MODE_AFTER);
+                    handler.postDelayed(ambientModeRunnable, ENABLE_AMBIENT_MODE_AFTER);
                 } else {
-                    ambientModeHandler.removeCallbacks(ambientModeRunnable);
-                    ambientModeHandler.postDelayed(ambientModeRunnable, ENABLE_AMBIENT_MODE_AFTER);
+                    handler.removeCallbacks(ambientModeRunnable);
+                    handler.postDelayed(ambientModeRunnable, ENABLE_AMBIENT_MODE_AFTER);
                 }
                 return false;
             }
@@ -201,6 +210,47 @@ public class ClockActivity extends AppCompatActivity {
             @Override
             public void run() {
                 startRinging();
+            }
+        };
+        nextAlarmTimeUpdateRunnable = new Runnable() {
+
+            long milliSecBeforeNextAlarm;
+            long tmpMilliSec = 0;
+            int hour = 0, min = 0;
+            String message;
+
+            @Override
+            public void run() {
+                if (alarms != null) {
+                    milliSecBeforeNextAlarm = Long.MAX_VALUE;
+                    for (Alarm alarm : alarms) {
+                        tmpMilliSec = alarm.milliSecBeforeSetOff();
+                        if (milliSecBeforeNextAlarm > tmpMilliSec)
+                            milliSecBeforeNextAlarm = tmpMilliSec;
+                    }
+                    Log.d(TAG, "milliSecBeforeNextAlarm: " + milliSecBeforeNextAlarm);
+                    milliSecBeforeNextAlarm = milliSecBeforeNextAlarm / 1000;
+//                    milliSecBeforeNextAlarm is now seconds
+                    hour = (int) (milliSecBeforeNextAlarm / 3600);
+                    milliSecBeforeNextAlarm -= hour * 3600;
+                    min = (int) (milliSecBeforeNextAlarm / 60);
+                    if (hour > 0) {
+                        message = getString(R.string.msg_alarm_hour_min, hour, hour > 1 ? "s" :
+                                "", min, min > 1 ? "s" : "");
+                    } else {
+                        if (min > 0) {
+                            message = getString(R.string.msg_alarm_min,
+                                    min, min > 1 ? "s" : "");
+                        } else {
+                            message = getString(R.string.msg_alarm_now);
+                        }
+                    }
+                    nextAlarmMsg.setText(message);
+                }
+                if (!stopNextAlarmTimeUpdateRunnable) {
+//                    in about a minute
+                    handler.postAtTime(this, SystemClock.uptimeMillis() + 60000);
+                }
             }
         };
     }
@@ -227,7 +277,7 @@ public class ClockActivity extends AppCompatActivity {
         btnStop.setOnClickListener(clicksListener);
         rootView.setOnTouchListener(touchListener);
 
-        ambientModeHandler = new Handler();
+        handler = new Handler();
     }
 
     @Override
@@ -241,6 +291,8 @@ public class ClockActivity extends AppCompatActivity {
         setRepeatingAlarmToDownloadWeatherData(true);
         fetchAlarms();
         updateSetting();
+        stopNextAlarmTimeUpdateRunnable = false;
+        handler.postDelayed(nextAlarmTimeUpdateRunnable, 5000);
     }
 
 
@@ -249,6 +301,7 @@ public class ClockActivity extends AppCompatActivity {
         Log.d(TAG, "onStop");
         watchWeatherInfo(false);
         setRepeatingAlarmToDownloadWeatherData(false);
+        stopNextAlarmTimeUpdateRunnable = true;
         super.onStop();
     }
 
@@ -291,10 +344,12 @@ public class ClockActivity extends AppCompatActivity {
         weatherMain.setText(getString(R.string.weather_main, (int) temp_degree, unicode));
 
         if (description == null) {
-            weatherDesc.setVisibility(View.GONE);
+            if (!isInAmbientMode)
+                weatherDesc.setVisibility(View.GONE);
         } else {
             weatherDesc.setText(description);
-            weatherDesc.setVisibility(View.VISIBLE);
+            if (!isInAmbientMode)
+                weatherDesc.setVisibility(View.VISIBLE);
         }
         weatherDesc.setText(description);
 
@@ -302,13 +357,15 @@ public class ClockActivity extends AppCompatActivity {
                 temp_min, temp_max));
 
         if (city == null) {
-            weatherCity.setVisibility(View.GONE);
+            if (!isInAmbientMode)
+                weatherCity.setVisibility(View.GONE);
         } else {
             weatherCity.setText(city);
-            weatherCity.setVisibility(View.VISIBLE);
+            if (!isInAmbientMode)
+                weatherCity.setVisibility(View.VISIBLE);
         }
-
-        weatherViews.setVisibility(View.VISIBLE);
+        if (!isInAmbientMode)
+            weatherViews.setVisibility(View.VISIBLE);
     }
 
     private String weatherIdToUnicode(int weatherId) {
@@ -352,7 +409,10 @@ public class ClockActivity extends AppCompatActivity {
                 if (snapshot == null) {
                     return;
                 }
-                List<Alarm> alarms = new ArrayList<>();
+                if (alarms == null)
+                    alarms = new ArrayList<>();
+                else
+                    alarms.clear();
                 Alarm alarm;
                 for (DocumentSnapshot ds : snapshot.getDocuments()) {
                     alarm = ds.toObject(Alarm.class);
@@ -367,22 +427,21 @@ public class ClockActivity extends AppCompatActivity {
     }
 
     private void setJobForAlarms(List<Alarm> alarms) {
-        Log.d(TAG, "sethandlerForAlarms");
+        Log.d(TAG, "setHandlerForAlarms");
 
-        ambientModeHandler.removeCallbacks(startAlarmRunnable);
+        handler.removeCallbacks(startAlarmRunnable);
 
         for (Alarm alarm : alarms) {
             if (alarm.enabled) {
-                long millisecInNextAlarm = alarm.nextAfterMilli();
-                Calendar cal = Calendar.getInstance();
-                cal.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
+                long millisecInNextAlarm = alarm.milliSecBeforeSetOff();
+                Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Kolkata"));
                 cal.add(Calendar.MILLISECOND, (int) millisecInNextAlarm);
-//                cal.setTimeInMillis(System.currentTimeMillis() + millisecInNextAlarm);
                 Log.d(TAG, String.format("ring at : %d %d:%d", cal.get(Calendar.DATE),
                         cal.get(Calendar.HOUR_OF_DAY),
                         cal.get(Calendar.MINUTE)
                 ));
-                ambientModeHandler.postDelayed(startAlarmRunnable, millisecInNextAlarm);
+                handler.postAtTime(startAlarmRunnable,
+                        SystemClock.uptimeMillis() + millisecInNextAlarm);
             }
         }
     }
@@ -413,6 +472,7 @@ public class ClockActivity extends AppCompatActivity {
         leftSidebar.setVisibility(visibility);
         weatherDesc.setVisibility(visibility);
         weatherCity.setVisibility(visibility);
+        nextAlarmViews.setVisibility(visibility == View.VISIBLE ? View.GONE : View.VISIBLE);
 
         // adjust the brightness
         WindowManager.LayoutParams lp = getWindow().getAttributes();
@@ -424,8 +484,8 @@ public class ClockActivity extends AppCompatActivity {
         ENABLE_AMBIENT_MODE_AFTER =
                 sharedPreferences.getInt(getString(R.string.pref_setting_ambient_key),
                         ENABLE_AMBIENT_MODE_AFTER);
-        ambientModeHandler.removeCallbacks(ambientModeRunnable);
-        ambientModeHandler.postDelayed(ambientModeRunnable, ENABLE_AMBIENT_MODE_AFTER);
+        handler.removeCallbacks(ambientModeRunnable);
+        handler.postDelayed(ambientModeRunnable, ENABLE_AMBIENT_MODE_AFTER);
 
     }
 
@@ -446,7 +506,7 @@ public class ClockActivity extends AppCompatActivity {
             mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.alarm);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
-//        ambientModeHandler.postDelayed(startAlarmRunnable, 24 * 60 * 60 * 1000);
+//        handler.postDelayed(startAlarmRunnable, 24 * 60 * 60 * 1000);
     }
 
     /*    click handlers below  */

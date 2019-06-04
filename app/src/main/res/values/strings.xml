@@ -18,6 +18,15 @@
     <string name="icon_sound">\uf001</string>
     <string name="icon_sun">\uf185</string>
     <string name="icon_location"></string>
+    <string name="icon_alarm">\uf34e</string>
+
+    <!--Toast messages-->
+    <string name="toast_permission_needed_message">We need that permission to list all the audio files</string>
+
+    <!--screen text-->
+    <string name="msg_alarm_hour_min">Next alarm in %1$02d hour%2$s %3$02d minute%4$s</string>
+    <string name="msg_alarm_min">Next alarm in %1$02d minute%2$s</string>
+    <string name="msg_alarm_now">Ringing Now</string>
 
 
     <!--preferences-->

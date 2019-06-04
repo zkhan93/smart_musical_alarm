@@ -150,8 +150,7 @@ public class SettingActivity extends AppCompatActivity {
                     int i = 0;
                     for (i = 0; i < permissions.length; i++) {
                         if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                            Toast.makeText(getApplicationContext(), "We need that permission to " +
-                                    "list all the audio files", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), R.string.toast_permission_needed_message, Toast.LENGTH_LONG).show();
                             break;
                         }
                     }
@@ -159,6 +158,5 @@ public class SettingActivity extends AppCompatActivity {
                 }
                 break;
         }
-        Log.d(TAG, "got result back" + String.valueOf(requestCode));
     }
 }

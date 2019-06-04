@@ -3,10 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    android:id="@+id/root"
     android:padding="4dp"
     tools:context=".ClockActivity">
 
@@ -21,9 +21,9 @@
         android:id="@+id/main_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
         android:gravity="center"
         android:orientation="vertical"
-        android:animateLayoutChanges="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@id/right_sidebar"
         app:layout_constraintRight_toRightOf="@id/left_sidebar"
@@ -47,6 +47,14 @@
         <include
             android:id="@+id/weather_views"
             layout="@layout/weather_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="gone"/>
+
+        <include
+            android:id="@+id/alarm_content"
+            layout="@layout/next_alarm_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"

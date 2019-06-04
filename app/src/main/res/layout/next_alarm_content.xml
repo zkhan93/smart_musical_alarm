@@ -1,33 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
+              android:layout_width="wrap_content"
               android:layout_height="match_parent"
               android:gravity="center"
-              android:orientation="vertical"
+              android:orientation="horizontal"
               tools:showIn="@layout/activity_clock">
 
     <TextView
-        android:id="@+id/btn_alarms"
         style="@style/Text.Icon.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/icon_alarm"/>
 
     <TextView
-        android:id="@+id/btn_stop"
-        style="@style/Text.Icon.Button"
+        android:id="@+id/next_alarm_msg"
+        style="@style/Text.Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/icon_stop"/>
-
-    <TextView
-        android:id="@+id/btn_music"
-        style="@style/Text.Icon.Button"
-        android:fontFamily="@font/fontawesome_brands"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/icon_spotify"/>
+        android:layout_marginStart="8dp"
+        tools:text="Next alarm in 23 hours 20 minutes"/>
 </LinearLayout>
