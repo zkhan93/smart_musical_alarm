@@ -1,18 +1,17 @@
 package io.github.zkhan93.alarmandplayer;
 
-import android.content.ContentResolver;
-import android.content.Intent;
+import android.Manifest;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.net.Uri;
+import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,6 +46,7 @@ public class SettingActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     private View.OnClickListener clicksListener;
     private SharedPreferences.OnSharedPreferenceChangeListener preferenceChangeListener;
+    private final int PERMISSION_REQUEST_FOR_ALARM_SOUND = 1;
 
     {
         clicksListener = new View.OnClickListener() {
@@ -126,7 +126,39 @@ public class SettingActivity extends AppCompatActivity {
     }
 
     private void settingAlarmSoundClicked() {
+        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            showAlarmSoundDialog();
+        } else {
+            requestPermissions(
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    PERMISSION_REQUEST_FOR_ALARM_SOUND);
+        }
+    }
+
+    private void showAlarmSoundDialog() {
         MediaPickerDialog dialog = new MediaPickerDialog();
         dialog.show(getSupportFragmentManager(), MediaPickerDialog.TAG);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PERMISSION_REQUEST_FOR_ALARM_SOUND:
+                if (permissions.length != 0 && grantResults.length != 0) {
+                    int i = 0;
+                    for (i = 0; i < permissions.length; i++) {
+                        if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                            Toast.makeText(getApplicationContext(), "We need that permission to " +
+                                    "list all the audio files", Toast.LENGTH_LONG).show();
+                            break;
+                        }
+                    }
+                    showAlarmSoundDialog();
+                }
+                break;
+        }
+        Log.d(TAG, "got result back" + String.valueOf(requestCode));
     }
 }
