@@ -525,7 +525,7 @@ public class ClockActivity extends AppCompatActivity {
     }
 
     public void btnAlarmsClicked(View view) {
-        startActivity(new Intent(this, AlarmActivity.class));
+        startActivity(new Intent(this, AlarmsActivity.class));
     }
 
     public void btnSettingClicked(View view) {

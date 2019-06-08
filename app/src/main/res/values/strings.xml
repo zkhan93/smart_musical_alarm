@@ -41,8 +41,6 @@
     <string name="pref_setting_alarm_title">Alarm Sound</string>
 
 
-
-
     <!--weather icon unicode according to open weather map
         https://github.com/erikflowers/weather-icons/ -> icon font
         https://erikflowers.github.io/weather-icons/api-list.html -> open weather map codes to css

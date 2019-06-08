@@ -1,7 +1,12 @@
-# smart_musical_alarm
+# Smart Musical Alarm
 android thing app to wake me up on time!!!
 
-TODO
-- add weather (OpenWeather)
-- add music player (Not sure which one - Google Play maybe)
-- add Alarm adding featuring sync with firebase
+# Screenshots
+
+
+# TODO
+- [x] pick sound file to play from device
+- [ ] add music player (Not sure which one - Google Play maybe)
+- [x] update existing Alarm timings
+- [x] add a new Alarm
+- [ ] delete existing alarm

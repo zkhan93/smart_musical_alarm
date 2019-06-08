@@ -8,14 +8,13 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.github.zkhan93.alarmandplayer.dialog.BaseDialogFragment;
+import io.github.zkhan93.alarmandplayer.dialog.SimpleSettingDialogFragment;
 import io.github.zkhan93.alarmandplayer.dialog.MediaPickerDialog;
 
 public class SettingActivity extends AppCompatActivity {
@@ -110,9 +109,9 @@ public class SettingActivity extends AppCompatActivity {
                 sharedPreferences.getInt(getString(R.string.pref_setting_ambient_key), 15000) / 1000;
         String desc = getString(R.string.setting_ambient_desc, secs);
         DialogFragment settingFragment =
-                BaseDialogFragment.getInstance(R.string.setting_ambient_title,
+                SimpleSettingDialogFragment.getInstance(R.string.setting_ambient_title,
                         R.string.pref_setting_ambient_key, desc);
-        settingFragment.show(getSupportFragmentManager(), BaseDialogFragment.TAG);
+        settingFragment.show(getSupportFragmentManager(), SimpleSettingDialogFragment.TAG);
     }
 
     private void settingLocationClicked() {
@@ -120,9 +119,9 @@ public class SettingActivity extends AppCompatActivity {
                 sharedPreferences.getString(getString(R.string.pref_setting_location_key), "Not " +
                         "set");
         DialogFragment settingFragment =
-                BaseDialogFragment.getInstance(R.string.setting_location_title,
+                SimpleSettingDialogFragment.getInstance(R.string.setting_location_title,
                         R.string.pref_setting_location_key, location);
-        settingFragment.show(getSupportFragmentManager(), BaseDialogFragment.TAG);
+        settingFragment.show(getSupportFragmentManager(), SimpleSettingDialogFragment.TAG);
     }
 
     private void settingAlarmSoundClicked() {

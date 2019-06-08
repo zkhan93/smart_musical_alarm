@@ -19,8 +19,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.github.zkhan93.alarmandplayer.R;
 
-public class BaseDialogFragment extends DialogFragment {
-    public static final String TAG = BaseDialogFragment.class.getSimpleName();
+public class SimpleSettingDialogFragment extends DialogFragment {
+    public static final String TAG = SimpleSettingDialogFragment.class.getSimpleName();
 
     private int title;
     private int preferenceKey;
@@ -52,8 +52,8 @@ public class BaseDialogFragment extends DialogFragment {
         };
     }
 
-    public static BaseDialogFragment getInstance(int title, int preferenceKey, String desc) {
-        BaseDialogFragment frag = new BaseDialogFragment();
+    public static SimpleSettingDialogFragment getInstance(int title, int preferenceKey, String desc) {
+        SimpleSettingDialogFragment frag = new SimpleSettingDialogFragment();
         Bundle args = new Bundle();
         args.putInt("title", title);
         args.putInt("preferenceKey", preferenceKey);

@@ -33,9 +33,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AlarmActivity"
+            android:name=".AlarmsActivity"
             android:parentActivityName=".ClockActivity"
             android:theme="@style/AppTheme"/>
+        <activity
+            android:name=".AlarmActivity"
+            android:theme="@style/AppTheme"
+            android:parentActivityName=".AlarmsActivity"/>
         <activity
             android:name=".SettingActivity"
             android:parentActivityName=".ClockActivity"

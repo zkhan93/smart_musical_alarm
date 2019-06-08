@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="@style/Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:textColor">@color/colorTextPrimary</item>
         <item name="android:fontFamily">@font/opensans_light</item>
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -50,5 +50,19 @@
     <style name="EditText" parent="Widget.AppCompat.EditText">
         <item name="android:textColor">@color/colorTextPrimary</item>
         <item name="android:textColorHint">@color/colorTextPrimary</item>
+    </style>
+    <style name="CheckBox" parent="Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:textColor">@color/colorTextPrimary</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
+        <item name="android:buttonTint">@color/colorTextPrimary</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+    <style name="TimePicker">
+        <item name="android:numbersTextColor">@color/colorTextPrimary</item>
+        <item name="android:timePickerMode">clock</item>
+        <item name="android:numbersSelectorColor">#66ffffff</item>
+        <item name="android:numbersBackgroundColor">#22000000</item>
+        <item name="android:headerBackground">#00000000</item>
     </style>
 </resources>
