@@ -2,6 +2,16 @@
 android thing app to wake me up on time!!!
 
 # Screenshots
+## Home Screen
+![](./screenshots/home_screen.png)
+## Ambient Home Screen
+![](./screenshots/ambient_home.png)
+## Alarms Screen
+![](./screenshots/alarms_screen.png)
+## Set Alarm Screen
+![](./screenshots/set_alarm_screen.png)
+## Settings Screen
+![](./screenshots/settings_screen.png)
 
 
 # TODO
