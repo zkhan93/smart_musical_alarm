@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "573171816590",
+    "firebase_url": "https://smart-musical-alarm.firebaseio.com",
+    "project_id": "smart-musical-alarm",
+    "storage_bucket": "smart-musical-alarm.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:573171816590:android:47d2e28105502674",
+        "android_client_info": {
+          "package_name": "io.github.zkhan93.alarmandplayer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "573171816590-ivrflvkt8c3ghag1ef85qqkqfum6r24h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "io.github.zkhan93.alarmandplayer",
+            "certificate_hash": "680d9b086dd9186fbdbd34687495db89782cfeb3"
+          }
+        },
+        {
+          "client_id": "573171816590-brgkbf1005ataipoei2oivhlo7p22hbb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcdO14-cPXsvOKGwKXDL8yDhffEOOidas"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "573171816590-brgkbf1005ataipoei2oivhlo7p22hbb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

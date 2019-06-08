@@ -1,8 +1,68 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="@style/Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:textColor">@color/colorTextPrimary</item>
+        <item name="android:fontFamily">@font/opensans_light</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="Text">
+        <item name="android:fontFamily">@font/opensans_light</item>
+        <item name="android:textColor">@color/colorTextPrimary</item>
+    </style>
+
+    <style name="Text.Icon">
+        <item name="android:fontFamily">@font/fontawesome_light</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">18pt</item>
+    </style>
+
+    <style name="Text.Icon.Button">
+        <item name="android:background">?android:selectableItemBackgroundBorderless</item>
+        <item name="android:clickable">true</item>
+        <item name="android:padding">16dp</item>
+    </style>
+
+    <style name="Text.Heading">
+        <item name="android:textSize">45sp</item>
+    </style>
+
+    <style name="Text.Title">
+        <item name="android:textSize">20sp</item>
         <item name="android:fontFamily">@font/opensans_regular</item>
+    </style>
+
+    <style name="Dialog" parent="@style/Theme.AppCompat.DayNight.Dialog.Alert">
+        <item name="android:textColor">@color/colorTextPrimary</item>
+        <item name="android:background">@drawable/background</item>
+        <item name="android:editTextStyle">@style/EditText</item>
+        <item name="colorAccent">@color/colorTextPrimary</item>
+    </style>
+
+    <style name="Dialog.FullWidth" parent="@style/Theme.AppCompat.DayNight.Dialog.Alert">
+        <item name="android:windowMinWidthMajor">90%</item>
+        <item name="android:windowMinWidthMinor">90%</item>
+    </style>
+
+    <style name="EditText" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@color/colorTextPrimary</item>
+        <item name="android:textColorHint">@color/colorTextPrimary</item>
+    </style>
+    <style name="CheckBox" parent="Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:textColor">@color/colorTextPrimary</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
+        <item name="android:buttonTint">@color/colorTextPrimary</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+    <style name="TimePicker">
+        <item name="android:numbersTextColor">@color/colorTextPrimary</item>
+        <item name="android:timePickerMode">clock</item>
+        <item name="android:numbersSelectorColor">#66ffffff</item>
+        <item name="android:numbersBackgroundColor">#22000000</item>
+        <item name="android:headerBackground">#00000000</item>
     </style>
 </resources>

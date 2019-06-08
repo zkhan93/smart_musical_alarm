@@ -95,4 +95,8 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+.idea/markdown-navigator.xml
+.idea/markdown-navigator/
+app/src/main/res/raw/
+redo
 

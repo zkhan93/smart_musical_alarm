@@ -2,7 +2,7 @@ package io.github.zkhan93.alarmandplayer.service.openweathermap.response;
 
 public class Main {
     public float temp;
-    public int pressure;
+    public float pressure;
     public int humidity;
     public float temp_min;
 

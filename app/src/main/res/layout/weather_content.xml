@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center"
+              android:orientation="vertical"
+              tools:showIn="@layout/activity_clock">
+
+    <TextView
+        android:id="@+id/weather_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/weathericons_regular_webfont"
+        android:textSize="24pt"
+        tools:text="17\u00B0 \uf01c"/>
+
+    <TextView
+        android:id="@+id/weather_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14pt"
+        tools:text=" light rain"/>
+
+    <TextView
+        android:id="@+id/temp_min_max"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="23\u00B0 / 34\u00B0"
+        android:textSize="10pt"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/city"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:clickable="true"
+        android:text="Bangalore, India"
+        android:textSize="10pt"/>
+</LinearLayout>
